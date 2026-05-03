@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Add Product</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9fc; color: #334155; }
+    .card { border: none; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 600px; margin: 50px auto; }
+    .form-label { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: #475569; }
+    .form-control, .form-select {
+      border-radius: 10px; padding: 12px 15px; border: 1px solid #e2e8f0; transition: all 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #4361ee; box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+    }
+    .btn-success { background-color: #10b981; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 600; }
+    .btn-secondary { background-color: #94a3b8; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 600; }
+    .error-msg { font-size: 0.8rem; margin-top: 4px; display: block; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card p-4 p-md-5">
+    <h3 class="mb-4 fw-bold text-center">Thêm sản phẩm mới</h3>
+
+    <form th:action="@{/admin/products/add}" th:object="${product}" method="post">
+
+      <div class="mb-3">
+        <label class="form-label">Tên sản phẩm</label>
+        <input type="text" class="form-control" placeholder="Nhập tên sản phẩm..." th:field="*{proName}">
+        <small class="text-danger error-msg" th:if="${#fields.hasErrors('proName')}" th:errors="*{proName}"></small>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Mô tả chi tiết</label>
+        <textarea class="form-control" rows="3" placeholder="Viết mô tả ngắn gọn..." th:field="*{proDesc}"></textarea>
+        <small class="text-danger error-msg" th:if="${#fields.hasErrors('proDesc')}" th:errors="*{proDesc}"></small>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Giá bán (VNĐ)</label>
+          <input type="number" class="form-control" placeholder="0" th:field="*{price}">
+          <small class="text-danger error-msg" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></small>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Số lượng kho</label>
+          <input type="number" class="form-control" placeholder="0" th:field="*{quantity}">
+          <small class="text-danger error-msg" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></small>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Danh mục sản phẩm</label>
+        <select class="form-select" th:field="*{categoryId}">
+          <option value="">-- Chọn danh mục --</option>
+          <option th:each="c : ${categories}" th:value="${c.catId}" th:text="${c.catName}"></option>
+        </select>
+        <small class="text-danger error-msg" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></small>
+      </div>
+
+      <div class="d-flex gap-2 justify-content-center border-top pt-4">
+        <a th:href="@{/admin/products}" class="btn btn-secondary px-4">Quay lại</a>
+        <button type="submit" class="btn btn-success px-5">Xác nhận thêm</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

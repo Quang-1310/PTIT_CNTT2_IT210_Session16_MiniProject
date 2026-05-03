@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán - Client</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+
+  <style>
+    :root { --sidebar-width: 240px; --primary: #4361ee; --dark: #1e1e2d; --bg: #f8f9fc; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; margin: 0; min-height: 100vh; }
+
+    .sidebar { width: var(--sidebar-width); background: var(--dark); color: #a2a3b7; position: fixed; height: 100vh; padding: 20px 15px; }
+    .sidebar h3 { color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 30px; padding-left: 15px; }
+    .sidebar a { display: flex; align-items: center; color: #a2a3b7; text-decoration: none; padding: 12px 15px; border-radius: 10px; margin-bottom: 5px; }
+    .sidebar a:hover, .sidebar a.active { background: rgba(255, 255, 255, 0.08); color: white; }
+    .sidebar a.active { background: var(--primary); }
+
+    .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; }
+    .topbar { background: white; height: 65px; display: flex; align-items: center; justify-content: flex-end; padding: 0 30px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); }
+    .content { padding: 30px; }
+
+    .checkout-card { background: white; border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 25px; }
+    .form-label { font-weight: 600; color: #4b5563; }
+    .form-control { border-radius: 10px; padding: 12px; border: 1px solid #e5e7eb; }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); }
+    .order-summary { background: #f1f4ff; border-radius: 12px; padding: 20px; }
+    .text-error { color: #e63946; font-size: 0.85rem; margin-top: 5px; }
+    .notification-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      min-width: 320px;
+      max-width: 420px;
+    }
+
+    .alert-custom {
+      border: none;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .alert-custom .icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .alert-danger-custom {
+      background-color: #fff5f5;
+      color: #c0392b;
+    }
+
+    .alert-danger-custom .icon-box {
+      background-color: #e74c3c;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h3>SHOP CLIENT</h3>
+  <a th:href="@{/client/home}"><span class="material-symbols-outlined me-2">home</span>Home</a>
+  <a th:href="@{/cart/listCart}" class="active"><span class="material-symbols-outlined me-2">shopping_cart</span>Cart</a>
+  <a href="#"><span class="material-symbols-outlined me-2">receipt_long</span> Orders</a>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <span>Chào, <b th:text="${session.userLogin}">User</b></span>
+  </div>
+
+  <div class="content">
+    <h4 class="mb-4 fw-bold text-dark">Thông tin thanh toán</h4>
+
+    <form th:action="@{/cart/payment}" th:object="${orderDTO}" method="post">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="checkout-card">
+            <div class="mb-3">
+              <label class="form-label">Tên người nhận</label>
+              <input type="text" th:field="*{receiverName}" class="form-control" placeholder="Nhập tên người nhận...">
+              <div class="text-error" th:if="${#fields.hasErrors('receiverName')}" th:errors="*{receiverName}"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Số điện thoại</label>
+              <input type="text" th:field="*{phone}" class="form-control" placeholder="0xxxxxxxxx">
+              <div class="text-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Địa chỉ nhận hàng</label>
+              <textarea th:field="*{address}" class="form-control" rows="3" placeholder="Số nhà, tên đường, xã/phường..."></textarea>
+              <div class="text-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+            </div>
+
+            <div class="mb-0">
+              <label class="form-label">Ghi chú (tùy chọn)</label>
+              <textarea th:field="*{note}" class="form-control" rows="2" placeholder="Lưu ý cho shipper..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="checkout-card">
+            <h5 class="fw-bold mb-3">Sản phẩm của bạn</h5>
+            <div class="order-summary mb-3">
+              <div th:each="item : ${cart}" class="d-flex justify-content-between mb-2 border-bottom pb-2">
+                <div>
+                  <span class="fw-bold" th:text="${item.product.proName}"></span>
+                  <small class="text-muted d-block" th:text="'x' + ${item.quantity}"></small>
+                </div>
+                <span class="fw-bold" th:text="${item.product.price * item.quantity + ' $'}"></span>
+              </div>
+
+              <div class="d-flex justify-content-between mt-3">
+                <span class="h5 fw-bold">Tổng tiền:</span>
+                <span class="h5 fw-bold text-danger" th:text="${#aggregates.sum(cart.![product.price * quantity]) + ' $'}"></span>
+              </div>
+            </div>
+
+            <div class="alert alert-warning small">
+              <span class="material-symbols-outlined align-middle fs-6">info</span>
+              Vui lòng kiểm tra kỹ thông tin trước khi đặt hàng.
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm">
+              XÁC NHẬN ĐẶT HÀNG
+            </button>
+            <a th:href="@{/cart/listCart}" class="btn btn-link w-100 mt-2 text-decoration-none text-muted">Quay lại giỏ hàng</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="notification-container">
+  <div th:if="${error}" class="alert-custom alert-danger-custom alert-dismissible fade show" role="alert">
+    <div class="icon-box">
+      <span class="material-symbols-outlined">error</span>
+    </div>
+    <div class="me-4">
+      <strong class="d-block">Thanh toán lỗi</strong>
+      <span class="small" th:text="${error}"></span>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+            style="position: absolute; right: 10px; top: 15px;"></button>
+  </div>
+</div>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    setTimeout(() => {
+      const alertElement = document.querySelector('.alert-custom');
+      if (alertElement) {
+        alertElement.classList.remove('show');
+        alertElement.classList.add('fade');
+
+        setTimeout(() => {
+          alertElement.remove();
+        }, 300);
+      }
+    }, 2000);
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

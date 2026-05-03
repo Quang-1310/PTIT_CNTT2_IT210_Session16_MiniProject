@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #e0f2f1 0%, #f5f5f5 100%);
+            padding: 20px;
+        }
+
+        .glass-card {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            color: #2d3436;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #00b894;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+        }
+
+        .register-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .input-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #636e72;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 1.5px solid #dfe6e9;
+            border-radius: 12px;
+            outline: none;
+            color: #2d3436;
+            transition: 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #00b894;
+            box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.1);
+        }
+
+        .error-msg {
+            color: #d63031;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .btn-container {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 100%;
+            max-width: 450px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #00b894;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #00a884;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 184, 148, 0.2);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #636e72;
+        }
+
+        .login-link a {
+            color: #00b894;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .register-form { grid-template-columns: 1fr; }
+            .full-width, .btn-container { grid-column: span 1; }
+            button { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glass-card">
+    <div class="header">
+        <h1>Create Account</h1>
+        <p>Tham gia cùng chúng tôi để nhận những ưu đãi tuyệt vời nhất</p>
+    </div>
+
+    <form th:action="@{/auth/register}" method="post" th:object="${user}" class="register-form">
+
+        <div class="input-box full-width">
+            <label>Tên đăng nhập</label>
+            <input type="text" th:field="*{username}" placeholder="Nhập username..." required>
+            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red"></small>
+        </div>
+
+        <div class="input-box">
+            <label>Email</label>
+            <input type="email" th:field="*{email}" placeholder="example@gmail.com" required>
+            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red"></small>
+        </div>
+
+        <div class="input-box">
+            <label>Số điện thoại</label>
+            <input type="text" th:field="*{phone}" placeholder="0987xxxxxx" required>
+            <small th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" style="color: red"></small>
+        </div>
+
+        <div class="input-box">
+            <label>Mật khẩu</label>
+            <input type="password" th:field="*{password}" placeholder="••••••••" required>
+            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red"></small>
+        </div>
+
+        <div class="input-box">
+            <label>Xác nhận mật khẩu</label>
+            <input type="password" th:field="*{confirmPassword}" placeholder="••••••••" required>
+            <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color: red"></small>
+        </div>
+
+        <div class="btn-container">
+            <button type="submit">Đăng ký ngay</button>
+            <div class="login-link">
+                Đã có tài khoản? <a th:href="@{/auth/login}">Đăng nhập</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
