@@ -42,6 +42,10 @@ public class CartController {
         if (session.getAttribute("userLogin") == null){
             return "redirect:/auth/login";
         }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("admin")){
+            return "redirect:/admin/products";
+        }
         Product product = productService.getProductById(id);
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
         if (cart == null){
@@ -67,8 +71,12 @@ public class CartController {
 
     @GetMapping("/listCart")
     public String listCart(HttpSession session , Model model){
-        if (session.getAttribute("userLogin") == null){
+        if (session.getAttribute("userLogin") == null ){
             return "redirect:/auth/login";
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("admin")){
+            return "redirect:/admin/products";
         }
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
         if (cart == null){
@@ -86,6 +94,7 @@ public class CartController {
             cart = new ArrayList<>();
             session.setAttribute("cart", cart);
         }
+
         for(CartItem item : cart){
             if (item.getProduct().getProId().equals(id)){
                 cart.remove(item);
@@ -99,6 +108,10 @@ public class CartController {
     public String payment(HttpSession session ,  Model model){
         if (session.getAttribute("userLogin") == null){
             return "redirect:/auth/login";
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("admin")){
+            return "redirect:/admin/products";
         }
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
         model.addAttribute("cart", cart);
@@ -146,6 +159,10 @@ public class CartController {
         Object username = session.getAttribute("userLogin");
         if (username == null) {
             return "redirect:/auth/login";
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("admin")){
+            return "redirect:/admin/products";
         }
         List<Order> orders = orderRepository.findAll();
         User userLogin = userService.getUserByUsername(username.toString());

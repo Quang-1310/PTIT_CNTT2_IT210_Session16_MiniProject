@@ -227,7 +227,8 @@
                         <h5 th:text="${p.proName}" class="fw-bold"></h5>
 
                         <p class="price"
-                           th:text="${p.price + ' $'}"></p>
+                           th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + ' $'}">
+                        </p>
 
                         <p class="text-muted small"
                            th:text="${p.proDesc}"></p>

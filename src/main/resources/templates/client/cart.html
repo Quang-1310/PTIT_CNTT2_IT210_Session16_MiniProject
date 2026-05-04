@@ -148,10 +148,10 @@
                 <span class="badge bg-light text-dark p-2 px-3 border" th:text="${item.quantity}"></span>
               </td>
               <td>
-                <span class="price-text" th:text="${item.product.price + ' $'}"></span>
+                <span class="price-text"th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT') + ' $'}"></span>
               </td>
               <td>
-                <span class="fw-bold" th:text="${item.product.price * item.quantity + ' $'}"></span>
+                  <span class="price-text"th:text="${#numbers.formatDecimal((item.product.price * item.quantity), 0, 'COMMA', 0, 'POINT') + ' $'}"></span>
               </td>
               <td class="text-center">
                 <a th:href="@{/cart/delete/{id}(id=${item.product.proId})}"

@@ -37,6 +37,11 @@ public class ClientController {
             return "redirect:/auth/login";
         }
 
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("admin")){
+            return "redirect:/admin/products";
+        }
+
         int size = 5;
 
         Category category = null;

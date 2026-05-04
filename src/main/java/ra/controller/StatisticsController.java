@@ -1,5 +1,6 @@
 package ra.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +23,15 @@ public class StatisticsController {
     private OrderDetailRepository orderDetailRepository;
 
     @GetMapping("/detail")
-    public String detail(Model model) {
+    public String detail(Model model, HttpSession session) {
         List<Order> orders = orderRepository.findAll();
         Double totalProfit =  0.0;
         for(Order order : orders){
             totalProfit += order.getTotalAmount();
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
         }
         List<Object[]> top5Data = orderDetailRepository.findTopSellingProductNames();
         List<Object[]> top5 = top5Data.stream().limit(5).toList();

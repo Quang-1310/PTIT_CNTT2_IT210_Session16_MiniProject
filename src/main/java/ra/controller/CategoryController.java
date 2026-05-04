@@ -33,7 +33,10 @@ public class CategoryController {
         if (user == null) {
             return "redirect:/auth/login";
         }
-
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
+        }
         model.addAttribute("userLogin", user.toString());
         model.addAttribute("categories", categoryService.getAllCategories());
 
@@ -45,7 +48,10 @@ public class CategoryController {
         if (session.getAttribute("userLogin") == null) {
             return "redirect:/auth/login";
         }
-
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
+        }
         model.addAttribute("category", new CategoryDTO());
         return "admin/category/add";
     }
@@ -71,6 +77,10 @@ public class CategoryController {
         Object user = session.getAttribute("userLogin");
         if (user == null) {
             return "redirect:/auth/login";
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
         }
         Category category = categoryService.getCategoryById(id);
         CategoryDTO dto = new CategoryDTO();
@@ -98,6 +108,10 @@ public class CategoryController {
         Object user = session.getAttribute("userLogin");
         if (user == null) {
             return "redirect:/auth/login";
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
         }
         List<Product> activeProducts = productService.getActiveProductByCategory(id);
         if (!activeProducts.isEmpty()) {

@@ -22,7 +22,11 @@ public class AuthController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, HttpSession session) {
+        if (session.getAttribute("userLogin") != null) {
+            String role = (String) session.getAttribute("userLogin");
+            return role.equals("admin") ? "redirect:/admin/products" : "redirect:/client/home";
+        }
         model.addAttribute("user" , new UserDTO());
         return "auth/login";
     }
@@ -31,6 +35,10 @@ public class AuthController {
     public String login(@Valid @RequestParam("username") String username
             , @RequestParam("password") String password
             , @ModelAttribute("user") UserDTO userDTO, RedirectAttributes redirectAttributes , BindingResult result, HttpSession session) {
+        if (session.getAttribute("userLogin") != null) {
+            String role = (String) session.getAttribute("role");
+            return role.equals("admin") ? "redirect:/admin/products" : "redirect:/client/home";
+        }
         if (result.hasErrors()) {
             return "auth/login";
         }
@@ -38,11 +46,13 @@ public class AuthController {
         userDTO.setPassword(password);
         if (username.equals("admin") && password.equals("admin123")) {
             session.setAttribute("userLogin", "admin");
+            session.setAttribute("role", "admin");
             return "redirect:/admin/products";
         } else {
             Optional<User> user = Optional.ofNullable(userService.login(username, password));
             if (user.isPresent()) {
                 session.setAttribute("userLogin", user.get().getUsername());
+                session.setAttribute("role", "user");
                 return "redirect:/client/home";
             } else {
                 redirectAttributes.addFlashAttribute("error" , "Tài khoản hoặc mật khẩu không chính xác !");
@@ -52,15 +62,23 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String register(Model model) {
+    public String register(Model model,  HttpSession session) {
+        if (session.getAttribute("userLogin") != null) {
+            String role = (String) session.getAttribute("userLogin");
+            return role.equals("admin") ? "redirect:/admin/products" : "redirect:/client/home";
+        }
         model.addAttribute("user" , new RegisterDTO());
         return "auth/register";
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("user") RegisterDTO registerDTO, BindingResult result) {
+    public String register(@Valid @ModelAttribute("user") RegisterDTO registerDTO, BindingResult result, HttpSession session) {
         if (result.hasErrors()) {
             return "auth/register";
+        }
+        if (session.getAttribute("userLogin") != null) {
+            String role = (String) session.getAttribute("userLogin");
+            return role.equals("admin") ? "redirect:/admin/products" : "redirect:/client/home";
         }
         User user = new User();
         user.setUsername(registerDTO.getUsername());

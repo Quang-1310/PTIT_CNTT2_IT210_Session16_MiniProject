@@ -34,7 +34,10 @@ public class ProductController {
         if (user == null) {
             return "redirect:/auth/login";
         }
-
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
+        }
         Page<Product> products = productService.getAllProducts(page, 5);
 
         model.addAttribute("userLogin", user.toString());
@@ -50,7 +53,10 @@ public class ProductController {
         if (session.getAttribute("userLogin") == null) {
             return "redirect:/auth/login";
         }
-
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
+        }
         model.addAttribute("product", new ProductDTO());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "admin/product/add";
@@ -83,6 +89,11 @@ public class ProductController {
     public String showEditForm(@PathVariable("id") Long id, Model model, HttpSession session) {
         if (session.getAttribute("userLogin") == null) {
             return "redirect:/auth/login";
+        }
+
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
         }
         Product p = productService.getProductById(id);
         ProductDTO dto = new ProductDTO();
@@ -120,6 +131,10 @@ public class ProductController {
     public String deleteProduct(@PathVariable("id") Long id, HttpSession session) {
         if (session.getAttribute("userLogin") == null) {
             return "redirect:/auth/login";
+        }
+        Object role = session.getAttribute("role");
+        if(role != null && role.equals("user")){
+            return "redirect:/client/home";
         }
         productService.deleteProduct(id);
         return "redirect:/admin/products";
